@@ -1,8 +1,6 @@
 import logging
 
-import requests
 from django.shortcuts import redirect
-from django.urls import reverse
 from django.views import View
 from django_scopes import scope
 

@@ -3,3 +3,21 @@ recursive-include pretix_fsr_validation/templates *
 recursive-include pretix_fsr_validation/locale *
 include LICENSE
 exclude .gitlab-ci.yml
+
+recursive-include pretix_fsr_wallet *.gitkeep
+recursive-include pretix_fsr_wallet *.html
+recursive-include pretix_fsr_wallet *.po
+pretix_fsr_wallet/locale/de_Informal/.gitkeep
+pretix_fsr_wallet/locale/de_Informal/LC_MESSAGES/django.po
+pretix_fsr_wallet/static/pretix_fsr_wallet/.gitkeep
+pretix_fsr_wallet/templates/pretix_fsr_wallet/.gitkeep
+pretix_fsr_wallet/templates/pretix_fsr_wallet/action_overpaid.html
+pretix_fsr_wallet/templates/pretix_fsr_wallet/action_refund.html
+pretix_fsr_wallet/templates/pretix_fsr_wallet/checkout_payment_confirm.html
+pretix_fsr_wallet/templates/pretix_fsr_wallet/checkout_payment_form.html
+pretix_fsr_wallet/templates/pretix_fsr_wallet/control_payment.html
+pretix_fsr_wallet/templates/pretix_fsr_wallet/control_refund.html
+pretix_fsr_wallet/templates/pretix_fsr_wallet/new_refund_control_form.html
+pretix_fsr_wallet/templates/pretix_fsr_wallet/pending.html
+pretix_fsr_wallet/templates/pretix_fsr_wallet/settings_additional_info.html
+requirements.txt
