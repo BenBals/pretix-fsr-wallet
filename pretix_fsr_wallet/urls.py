@@ -1,11 +1,11 @@
 from django.conf.urls import url
+from django.urls import include, path
+from pretix.multidomain import event_url
 
-from .views import SettingsView
+from .views import OIDCLoginReturnView
 
 urlpatterns = [
-    url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/settings/fsr-wallet/$",
-        SettingsView.as_view(),
-        name="settings",
-    )
+    path('wallet/', include([
+        path('return/', OIDCLoginReturnView.as_view(), name='oidc_login_return'),
+    ])),
 ]

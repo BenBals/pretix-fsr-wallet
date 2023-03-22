@@ -6,20 +6,20 @@ try:
 except ImportError:
     raise RuntimeError("Please use pretix 2.7 or above to run this plugin!")
 
-__version__ = "1.0.2"
+__version__ = "1.0.0"
 
 
 class PluginApp(PluginConfig):
     name = "pretix_fsr_wallet"
-    verbose_name = "FSR Wallet"
+    verbose_name = "VerDE Wallet"
 
     class PretixPluginMeta:
-        name = gettext_lazy("FSR Wallet")
+        name = gettext_lazy("VerDE Wallet")
         author = "Ben Bals"
         description = gettext_lazy("Custom payment provider for wallet.myhpi.de, built for the FSR Digital Engineering at Uni Potsdam")
         visible = True
         version = __version__
-        category = "CUSTOMIZATION"
+        category = "PAYMENT"
         compatibility = "pretix>=3.18.0.dev0"
 
     def ready(self):

@@ -1,0 +1,20 @@
+{% load i18n %}
+
+{% if payment_info %}
+    <dl class="dl-horizontal">
+        {% if payment_info.username %}
+            <dt>{% trans "User" %}</dt>
+            <dd>{{ payment_info.username }}</dd>
+        {% endif %}
+        {% if payment_info.success %}
+            <dt>{% trans "Id" %}</dt>
+            <dd>{{ payment_info.success.id }}</dd>
+            <dt>{% trans "Description" %}</dt>
+            <dd>{{ payment_info.success.description }}</dd>
+        {% endif %}
+        {% if payment_info.last_error %}
+            <dt>{% trans "Last error" %}</dt>
+            <dd>{{ payment_info.last_error }}</dd>
+        {% endif %}
+    </dl>
+{% endif %}

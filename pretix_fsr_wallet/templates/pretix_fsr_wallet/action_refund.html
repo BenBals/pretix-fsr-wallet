@@ -1,0 +1,8 @@
+{% load i18n %}
+
+<p>
+    {% blocktrans trimmed with trans=data.transaction order=data.order %}
+        VerDE Wallet reported that the transaction has been refunded.
+        Do you want to refund mark the matching order ({{ order }}) as refunded?
+    {% endblocktrans %}
+</p>

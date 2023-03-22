@@ -1,0 +1,20 @@
+{% load i18n %}
+
+{% if refund_info %}
+    <dl class="dl-horizontal">
+        {% if refund_info.username %}
+            <dt>{% trans "User" %}</dt>
+            <dd>{{ refund_info.username }}</dd>
+        {% endif %}
+        {% if refund_info.success %}
+            <dt>{% trans "Id" %}</dt>
+            <dd>{{ refund_info.success.id }}</dd>
+            <dt>{% trans "Description" %}</dt>
+            <dd>{{ refund_info.success.description }}</dd>
+        {% endif %}
+        {% if refund_info.last_error %}
+            <dt>{% trans "Last error" %}</dt>
+            <dd>{{ refund_info.last_error }}</dd>
+        {% endif %}
+    </dl>
+{% endif %}
