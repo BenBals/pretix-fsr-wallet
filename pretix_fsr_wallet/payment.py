@@ -123,7 +123,6 @@ class Wallet(BasePaymentProvider):
         result = False
 
         if "payment_wallet_username" in request.session:
-            print("User previously authenticated as", request.session["payment_wallet_username"])
             return True
 
         try:
@@ -141,7 +140,6 @@ class Wallet(BasePaymentProvider):
             )
 
             if token_response.status_code != OK:
-                # TODO
                 print("Token response status code is ", token_response.status_code)
                 return False
 
@@ -150,13 +148,11 @@ class Wallet(BasePaymentProvider):
 
             auth_info = jws.verify(data["id_token"], self.settings["oidc:public_key"], algorithms=["RS256"])
             request.session["payment_wallet_username"] = json.loads(auth_info)["sub"]
-            print("Login successfull", request.session["payment_wallet_username"])
             result = True
         except TypeError:
-            # TODO
-            raise Exception("Could not verify token!")
+            print("Could not verify token!")
+            return False
 
-        print("Returning from payment_is_valid_session", result)
         return result
 
     def execute_payment_needs_user(self) -> bool:
@@ -192,7 +188,9 @@ class Wallet(BasePaymentProvider):
         try:
             user = request.session["payment_wallet_username"]
         except KeyError:
-            # TODO: User not authenticated
+            self.set_info_key_on_payment_or_refund(
+                payment, "last_error", "User session not authenticated against OIDC."
+            )
             raise PaymentException(
                 _("We could not authenticate you. Please retry the payment. Contact us if the problem persists.")
             )
