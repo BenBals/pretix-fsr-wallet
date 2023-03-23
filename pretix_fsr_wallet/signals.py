@@ -14,8 +14,9 @@ def register_payment_provider(sender, **kwargs):
 
 
 default_config = {
-    'wallet_backend:url': 'https://api.wallet.myhpi.de',
-    'oidc:url': 'https://oidc.hpi.de',
+    "wallet_backend:url": "https://api.wallet.myhpi.de",
+    "oidc:url": "https://oidc.hpi.de",
 }
+
 
 settings_hierarkey.add_default("fsr_wallet_config", json.dumps(default_config, cls=I18nJSONEncoder), dict)
