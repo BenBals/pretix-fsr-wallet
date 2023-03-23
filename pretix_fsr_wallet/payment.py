@@ -6,7 +6,6 @@ from decimal import Decimal
 from http.client import OK, CREATED
 from secrets import token_hex
 from typing import Union
-from urllib.parse import urljoin
 
 import requests
 from django import forms
@@ -195,7 +194,7 @@ class Wallet(BasePaymentProvider):
         except KeyError:
             # TODO: User not authenticated
             raise PaymentException(
-                _("We could not authenticate you. Please retry the payment. Contact us if the " "problem presists.")
+                _("We could not authenticate you. Please retry the payment. Contact us if the problem persists.")
             )
 
         print("Checking balance", user)
