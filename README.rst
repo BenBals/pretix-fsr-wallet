@@ -45,16 +45,16 @@ To automatically check for these issues before you commit, you can run ``.instal
 Configuration
 -------------
 
-1. Create an OIDC provider at oidc.hpi.de
-2. Create a terminal at wallet.myhpi.de
+You must provide configuration details and secrets in the settings for this plugin to work.
+
+1. Create an OIDC provider at `oidc.hpi.de`, copy the client id and secret. Add ``[pretix-url]/wallet/return/`` to the redirect urls.
+2. Copy the ``sig-rs-0`` key from `https://oidc.hpi.de/certs`.
+3. Create a terminal at `wallet.myhpi.de`, copy the API key.
 
 License
 -------
 
-
 Released under the terms of the Apache License 2.0
-
-
 
 .. _pretix: https://github.com/pretix/pretix
 .. _pretix development setup: https://docs.pretix.eu/en/latest/development/setup.html
