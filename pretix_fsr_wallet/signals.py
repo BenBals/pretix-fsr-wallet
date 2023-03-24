@@ -18,5 +18,4 @@ default_config = {
     "oidc:url": "https://oidc.hpi.de",
 }
 
-
 settings_hierarkey.add_default("fsr_wallet_config", json.dumps(default_config, cls=I18nJSONEncoder), dict)

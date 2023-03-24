@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-07 19:01+0100\n"
+"POT-Creation-Date: 2023-03-23 22:20+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: pretix team\n"
 "Language-Team: \n"
@@ -10,3 +10,162 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: pretix_fsr_wallet/__init__.py:18 pretix_fsr_wallet/payment.py:28
+msgid "VerDE Wallet"
+msgstr "VerDE Wallet"
+
+#: pretix_fsr_wallet/__init__.py:21
+msgid ""
+"Custom payment provider for wallet.myhpi.de, built for the FSR Digital "
+"Engineering at Uni Potsdam"
+msgstr ""
+
+#: pretix_fsr_wallet/payment.py:195
+msgid ""
+"We could not authenticate you. Please retry the payment. Contact us if the "
+"problem persists."
+msgstr "Wir konnten dich nicht authentifizieren. Bitte versuche es erneut. "
+"Kontaktiere uns falls das Problem weiter besteht."
+
+#: pretix_fsr_wallet/payment.py:209
+msgid ""
+"We could not fetch your balance from VerDE Wallet. You can check your "
+"balance at wallet.myphi.de. If you have already paid in money, please allow "
+"some time for us to manually process it. If you have not paid in money, see "
+"myhpi.de/wallet for how to do that. Your order has been created and your "
+"tickets are reserved until the payment deadline shown below. Note that you "
+"will have to manually retry the payment after your deposit has been credited."
+msgstr "Wir konnten dein Guthaben nicht aus dem VerDE Wallet abrufen. Du kannst "
+"dein Guthaben auf wallet.myhpi.de überprüfen. Hast du kürzlich eine Einzahlung "
+"getätigt, so brauchen wir etwas Zeit, um sie manuell einzubuchen. Hast du kein "
+"Geld eingezahlt, dann schau auf wallet.myhpi.de wie das geht. Deine Bestellung "
+"wurde angelegt und Deine Tickts sind bis zur unten genannten Zahlungsfrist "
+"reserviert. Beachte, dass du die Zahlung manuell erneut versuchen musst "
+"nachdem dein Guthaben aufgebucht wurde."
+
+#: pretix_fsr_wallet/payment.py:225
+msgid ""
+"Your balance is not sufficient. You can check your balance at wallet.myphi."
+"de. If you have already paid in money, please allow some time for us to "
+"manually process it. If you have not paid in money, see myhpi.de/wallet for "
+"how to do that. Your order has been created and your tickets are reserved "
+"until the payment deadline shown below. Note that you will have to manually "
+"retry the payment after your deposit has been credited."
+msgstr "Dein Guthaben reicht nicht aus. Du kannst "
+"dein Guthaben auf wallet.myhpi.de überprüfen. Hast du kürzlich eine Einzahlung "
+"getätigt, so brauchen wir etwas Zeit, um sie manuell einzubuchen. Hast du kein "
+"Geld eingezahlt, dann schau auf wallet.myhpi.de wie das geht. Deine Bestellung "
+"wurde angelegt und Deine Tickts sind bis zur unten genannten Zahlungsfrist "
+"reserviert. Beachte, dass du die Zahlung manuell erneut versuchen musst "
+"nachdem dein Guthaben aufgebucht wurde."
+
+#: pretix_fsr_wallet/payment.py:246
+msgid ""
+"Unfortunately, we could not process your transaction. Please try again or "
+"contact us."
+msgstr "Wir konnten Deine Zahlung leider nicht verarbeiten. Bitte versuche "
+"es erneut oder kontaktiere uns."
+
+#: pretix_fsr_wallet/payment.py:265
+msgid ""
+"Could not refund to VerDE Wallet. Please try again and contact us if the "
+"problem persists."
+msgstr "Erstattung aufs VerDE Wallet konnte nicht durchgeführt werden. "
+"Versuche es erneut oder kontaktiere uns, wenn das Problem weiter besteht."
+
+#: pretix_fsr_wallet/payment.py:272
+msgid ""
+"We had trouble communicating with VerDE Wallet. Please try again and contact "
+"us if the problem persists."
+msgstr "Wir konnten nicht mit dem VerDE Wallet sprechen."
+"Versuche es erneut oder kontaktiere uns, wenn das Problem weiter besteht."
+
+#: pretix_fsr_wallet/payment.py:281
+msgid ""
+"We could not find the VerDE Wallet account associated with the original "
+"payment. Please try again and contact us if the problem persists."
+msgstr "Wir konnten das passende VerDE Wallet zur ursprünglichen Zahlung "
+"nicht finden. Bitte versuche es erneut oder kontaktiere uns, wenn das "
+"Problem weiter besteht."
+
+
+#: pretix_fsr_wallet/payment.py:329
+msgid "OIDC Username"
+msgstr "OIDC Nutzername"
+
+#: pretix_fsr_wallet/payment.py:347
+msgid "Your input was invalid, please see below for details."
+msgstr "Die Eingabe war nicht korrekt, die Fehler findest du im Detail weiter unten."
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/action_overpaid.html:5
+#, python-format
+msgid ""
+"The VerDE Wallet transaction has succeeded, but the order %(order)s is "
+"expired and the product was sold out in the meantime. Therefore, the payment "
+"could not be accepted. Please contact the user and refund the money."
+msgstr "Die Transaktion ist erfolgreich im VerDE Wallet verbucht, aber die Bestellung "
+"%(order)s ist abgelaufen und das Produkt wurde in der Zwischenzeit ausverkauft. Daher "
+"konnte die Zahlung nicht angenommen werden. Bitte kontaktiere den Nutzer und erstatte "
+"die Zahlung."
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/checkout_payment_confirm.html:3
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/checkout_payment_form.html:3
+msgid ""
+"Pay with your balance at <a href=\"https://wallet.myhpi.de\" target=\"_blank"
+"\" rel=\"noopener noreferrer\">wallet.myhpi.de</a> (also used at the student "
+"coffee machine). See <a href=\"https://myhpi.de/wallet\" target=\"_blank\" "
+"rel=\"noopener noreferrer\">the how to page</a> on how to top up your "
+"account."
+msgstr ""
+"Bezahle mit Deinem Guthaben auf <a href=\"https://wallet.myhpi.de\" target=\"_blank"
+"\" rel=\"noopener noreferrer\">wallet.myhpi.de</a> (auch bei der studentischen "
+"Kaffeemaschine benutzt). Schau dir <a href=\"https://myhpi.de/wallet\" target=\"_blank\" "
+"rel=\"noopener noreferrer\">das How-To</a> über die Aufladung an."
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/control_payment.html:6
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/control_refund.html:6
+msgid "User"
+msgstr "Nutzer:in"
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/control_payment.html:10
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/control_refund.html:10
+msgid "Id"
+msgstr "Id"
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/control_payment.html:12
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/control_refund.html:12
+msgid "Description"
+msgstr "Beschreibung"
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/control_payment.html:16
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/control_refund.html:16
+msgid "Last error"
+msgstr "Letzter Fehler"
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/pending.html:4
+msgid ""
+"Our attempt to execute your payment has failed. Please try again or contact "
+"us."
+msgstr "Wir konnten die Zahlung nicht durchführen. Versuche es erneut oder "
+"kontaktiere uns."
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/pending.html:8
+msgid ""
+"We're waiting for an answer regarding your payment. Please contact us, if "
+"this takes more than a few hours."
+msgstr "Wir warten auf eine Antwort zu Deiner Zahlung. Bitte kontaktiere uns, "
+"wenn dies mehr einige Stunden dauert."
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/settings_additional_info.html:3
+msgid "Note:"
+msgstr "Beachte: "
+
+#: pretix_fsr_wallet/templates/pretix_fsr_wallet/settings_additional_info.html:4
+#, python-format
+msgid ""
+"Please note that you must add %(redirect_url)s to the list of allowed "
+"redirect urls for the OIDC application."
+msgstr ""
+"Beachte, dass Du %(redirect_url)s zur Liste der erlaubten Weiterleitungsurls "
+"für die OIDC-Applikation hinzufügen musst."
