@@ -30,7 +30,9 @@ jobs:
         run: sudo apt update && sudo apt install gettext
       - name: Install pretix
         run: pip3 install pretix
-      - name: Install Dependencies
+      - name: Install Test Dependencies
         run: pip3 install pytest pytest-django -Ue .
+      - name: Install Project Dependencies
+        run: pip3 install -r requirements.txt
       - name: Run checks
         run: py.test tests
