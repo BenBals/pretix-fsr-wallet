@@ -8,3 +8,4 @@ exclude .gitlab-ci.yml
 recursive-include pretix_fsr_wallet *.gitkeep
 recursive-include pretix_fsr_wallet *.html
 recursive-include pretix_fsr_wallet *.po
+  recursive-include pretix_fsr_wallet *.pot
