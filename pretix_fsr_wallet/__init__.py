@@ -1,6 +1,5 @@
-from pathlib import Path
-
 from django.utils.translation import gettext_lazy
+from pathlib import Path
 
 try:
     from pretix.base.plugins import PluginConfig

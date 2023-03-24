@@ -1,24 +1,24 @@
+from typing import Union
+
 import json
 import logging
+import requests
 import urllib
 from collections import OrderedDict
 from decimal import Decimal
-from http.client import OK, CREATED
-from secrets import token_hex
-from typing import Union
-
-import requests
 from django import forms
 from django.http import HttpRequest
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from http.client import CREATED, OK
 from jose import jws
 from jsonschema.exceptions import ValidationError
+from pretix.base.models import Order, OrderPayment, OrderRefund
+from pretix.base.payment import BasePaymentProvider, PaymentException
+from secrets import token_hex
 
 import pretix_fsr_wallet.signals as signals
-from pretix.base.models import OrderPayment, OrderRefund, Order
-from pretix.base.payment import BasePaymentProvider, PaymentException
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +85,11 @@ class Wallet(BasePaymentProvider):
 
     def settings_content_render(self, request: HttpRequest) -> str:
         template = get_template("pretix_fsr_wallet/settings_additional_info.html")
-        ctx = {"request": request, "event": self.event, "redirect_url": self.redirect_url(request)}
+        ctx = {
+            "request": request,
+            "event": self.event,
+            "redirect_url": self.redirect_url(request),
+        }
         return template.render(ctx)
 
     def payment_form_render(self, request) -> str:
@@ -146,7 +150,9 @@ class Wallet(BasePaymentProvider):
             data = token_response.json()
             print(data)
 
-            auth_info = jws.verify(data["id_token"], self.settings["oidc:public_key"], algorithms=["RS256"])
+            auth_info = jws.verify(
+                data["id_token"], self.settings["oidc:public_key"], algorithms=["RS256"]
+            )
             request.session["payment_wallet_username"] = json.loads(auth_info)["sub"]
             result = True
         except TypeError:
@@ -162,7 +168,9 @@ class Wallet(BasePaymentProvider):
     def wallet_backend_authorization_header(self):
         return {"Authorization": f"Bearer {self.settings['wallet_backend:api_key']}"}
 
-    def set_info_key_on_payment_or_refund(self, obj: OrderPayment | OrderRefund, key: str, value):
+    def set_info_key_on_payment_or_refund(
+        self, obj: OrderPayment | OrderRefund, key: str, value
+    ):
         current = obj.info_data
         current[key] = value
         obj.info_data = current
@@ -192,7 +200,9 @@ class Wallet(BasePaymentProvider):
                 payment, "last_error", "User session not authenticated against OIDC."
             )
             raise PaymentException(
-                _("We could not authenticate you. Please retry the payment. Contact us if the problem persists.")
+                _(
+                    "We could not authenticate you. Please retry the payment. Contact us if the problem persists."
+                )
             )
 
         print("Checking balance", user)
@@ -231,38 +241,58 @@ class Wallet(BasePaymentProvider):
                 )
             )
 
-        post_resp = self._transaction(user, -1 * payment.amount, payment.full_id, "Payment")
+        post_resp = self._transaction(
+            user, -1 * payment.amount, payment.full_id, "Payment"
+        )
         print(post_resp.status_code)
 
         if post_resp.status_code == CREATED:
             print("Payment successfull")
-            self.set_info_key_on_payment_or_refund(payment, "success", post_resp.json()["data"])
+            self.set_info_key_on_payment_or_refund(
+                payment, "success", post_resp.json()["data"]
+            )
             self.set_info_key_on_payment_or_refund(payment, "username", user)
             self.set_info_key_on_payment_or_refund(payment, "last_error", None)
             payment.confirm()
         else:
-            self.set_info_key_on_payment_or_refund(payment, "last_error", post_resp.json())
+            self.set_info_key_on_payment_or_refund(
+                payment, "last_error", post_resp.json()
+            )
             raise PaymentException(
-                _("Unfortunately, we could not process your transaction. Please try again or " "contact us.")
+                _(
+                    "Unfortunately, we could not process your transaction. Please try again or "
+                    "contact us."
+                )
             )
         return None
 
     def execute_refund(self, refund: OrderRefund):
         try:
-            user = refund.info_data["username"] if refund.info_data else refund.payment.info_data["username"]
+            user = (
+                refund.info_data["username"]
+                if refund.info_data
+                else refund.payment.info_data["username"]
+            )
             post_resp = self._transaction(user, refund.amount, refund.full_id, "Refund")
 
             self.set_info_key_on_payment_or_refund(refund, "username", user)
 
             if post_resp.status_code == CREATED:
-                self.set_info_key_on_payment_or_refund(refund, "success", post_resp.json()["data"])
+                self.set_info_key_on_payment_or_refund(
+                    refund, "success", post_resp.json()["data"]
+                )
                 self.set_info_key_on_payment_or_refund(refund, "last_error", None)
                 refund.done()
             else:
                 logger.exception("VerDE Wallet error: %s" % str(post_resp.json()))
-                self.set_info_key_on_payment_or_refund(refund, "last_error", post_resp.json())
+                self.set_info_key_on_payment_or_refund(
+                    refund, "last_error", post_resp.json()
+                )
                 raise PaymentException(
-                    _("Could not refund to VerDE Wallet. Please try again and contact us if the " "problem persists.")
+                    _(
+                        "Could not refund to VerDE Wallet. Please try again and contact us if the "
+                        "problem persists."
+                    )
                 )
         except requests.exceptions.RequestException as e:
             logger.exception("VerDE Wallet error: %s" % str(e))
@@ -275,7 +305,9 @@ class Wallet(BasePaymentProvider):
             )
         except KeyError as e:
             logger.exception("VerDE Wallet kef e: %s" % str(e))
-            self.set_info_key_on_payment_or_refund(refund, "last_error", "Could not find user associated with payment.")
+            self.set_info_key_on_payment_or_refund(
+                refund, "last_error", "Could not find user associated with payment."
+            )
             raise PaymentException(
                 _(
                     "We could not find the VerDE Wallet account associated with the original "
@@ -333,7 +365,9 @@ class Wallet(BasePaymentProvider):
     def new_refund_control_form_render(self, request: HttpRequest, order: Order):
         form = self.NewRefundForm(
             prefix="refund-wallet",
-            data=request.POST if request.method == "POST" and request.POST.get("refund-banktransfer-iban") else None,
+            data=request.POST
+            if request.method == "POST" and request.POST.get("refund-banktransfer-iban")
+            else None,
         )
         template = get_template("pretix_fsr_wallet/new_refund_control_form.html")
         ctx = {
@@ -341,10 +375,14 @@ class Wallet(BasePaymentProvider):
         }
         return template.render(ctx)
 
-    def new_refund_control_form_process(self, request: HttpRequest, amount: Decimal, order: Order) -> OrderRefund:
+    def new_refund_control_form_process(
+        self, request: HttpRequest, amount: Decimal, order: Order
+    ) -> OrderRefund:
         f = self.NewRefundForm(prefix="refund-wallet", data=request.POST)
         if not f.is_valid():
-            raise ValidationError(_("Your input was invalid, please see below for details."))
+            raise ValidationError(
+                _("Your input was invalid, please see below for details.")
+            )
         d = {"username": f.cleaned_data["username"], "type": "manual"}
         return OrderRefund(
             order=order,
@@ -372,7 +410,11 @@ class Wallet(BasePaymentProvider):
                 new[k] = d[k]
         obj.info_data = new
         obj.save(update_fields=["info"])
-        for le in obj.order.all_logentries().filter(action_type="pretix_sofort.sofort.event").exclude(data=""):
+        for le in (
+            obj.order.all_logentries()
+            .filter(action_type="pretix_sofort.sofort.event")
+            .exclude(data="")
+        ):
             d = le.parsed_data
             new = {"_shreded": True}
             for k in "success":

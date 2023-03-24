@@ -7,7 +7,9 @@ urlpatterns = [
         "wallet/",
         include(
             [
-                path("return/", OIDCLoginReturnView.as_view(), name="oidc_login_return"),
+                path(
+                    "return/", OIDCLoginReturnView.as_view(), name="oidc_login_return"
+                ),
             ]
         ),
     ),

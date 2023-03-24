@@ -1,9 +1,7 @@
 import logging
-
 from django.shortcuts import redirect
 from django.views import View
 from django_scopes import scope
-
 from pretix.base.models import Event, Organizer
 from pretix.multidomain.urlreverse import eventreverse
 
@@ -28,9 +26,14 @@ class OIDCLoginReturnView(View):
                 # Redirect back to the confirm page. We chose to save the
                 # event ID in the user's session. We could also put this
                 # information into a URL parameter.
-                organizer = Organizer.objects.get(pk=request.session["payment_wallet_organizer_pk"])
+                organizer = Organizer.objects.get(
+                    pk=request.session["payment_wallet_organizer_pk"]
+                )
                 with scope(organizer=organizer):
-                    event = Event.objects.get(pk=request.session["payment_wallet_event_pk"], organizer=organizer)
+                    event = Event.objects.get(
+                        pk=request.session["payment_wallet_event_pk"],
+                        organizer=organizer,
+                    )
                     return redirect(
                         eventreverse(
                             event,
