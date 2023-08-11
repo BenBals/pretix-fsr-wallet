@@ -17,6 +17,7 @@ from jsonschema.exceptions import ValidationError
 from pretix.base.models import Order, OrderPayment, OrderRefund
 from pretix.base.payment import BasePaymentProvider, PaymentException
 from secrets import token_hex
+import datetime
 
 import pretix_fsr_wallet.signals as signals
 
@@ -27,6 +28,9 @@ class Wallet(BasePaymentProvider):
     identifier = "wallet"
     verbose_name = _("VerDE Wallet")
     abort_pending_allowed = False
+
+    oidc_public_key_cache = None
+    oidc_public_key_cache_datetime = None
 
     @property
     def settings_form_fields(self):
@@ -51,7 +55,7 @@ class Wallet(BasePaymentProvider):
                 (
                     "oidc:url",
                     forms.URLField(
-                        label="OIDC Hostname",
+                        label="OIDC Provider URL",
                         initial=signals.default_config["oidc:url"],
                         required=True,
                     ),
@@ -70,13 +74,6 @@ class Wallet(BasePaymentProvider):
                         required=True,
                     ),
                 ),
-                (
-                    "oidc:public_key",
-                    forms.JSONField(
-                        label="OIDC Server Public Key (sig-rs-0)",
-                        required=True,
-                    ),
-                ),
             ]
             + list(super().settings_form_fields.items())
         )
@@ -90,7 +87,15 @@ class Wallet(BasePaymentProvider):
             "event": self.event,
             "redirect_url": self.redirect_url(request),
         }
+
         return template.render(ctx)
+
+    def settings_form_clean(self, cleaned_data):
+        # Reset oidc key cache, because the host could be changed
+        self.oidc_public_key_cache = None
+        self.oidc_public_key_cache_datetime = None
+
+        return cleaned_data
 
     def payment_form_render(self, request) -> str:
         template = get_template("pretix_fsr_wallet/checkout_payment_form.html")
@@ -123,6 +128,36 @@ class Wallet(BasePaymentProvider):
             + state
         )
 
+    def fetch_oidc_key_from_server(self):
+        logger.info(f"Fetching new oidc public key from server {self.settings['oidc:url']}")
+
+        get_resp = requests.get(f"{self.settings['oidc:url']}/certs")
+
+        if get_resp.status_code != OK:
+            logger.exception("Could not fetch OIDC public key, got response code ", get_resp.status_code)
+
+        rsa_key = None
+        for key in get_resp.json()["keys"]:
+            if key["kid"] == "sig-rs-0":
+                rsa_key = key
+
+        if rsa_key is None:
+            logger.exception("Could not fetch OIDC public key, got certs ", get_resp.json())
+        else:
+            self.oidc_public_key_cache_datetime = datetime.datetime.now()
+            self.oidc_public_key_cache = rsa_key
+
+    def get_oidc_public_key(self):
+        print("Getting oidc public key")
+        if self.oidc_public_key_cache is None or self.oidc_public_key_cache_datetime is None:
+            self.fetch_oidc_key_from_server()
+        else:
+            key_age = datetime.datetime.now() - self.oidc_public_key_cache_datetime
+            if key_age.total_seconds() > 86400:  # key is older than one day
+                self.fetch_oidc_key_from_server()
+
+        return self.oidc_public_key_cache
+
     def payment_is_valid_session(self, request):
         result = False
 
@@ -150,13 +185,15 @@ class Wallet(BasePaymentProvider):
             data = token_response.json()
             print(data)
 
+            print("OIDC public key", self.get_oidc_public_key())
+
             auth_info = jws.verify(
-                data["id_token"], self.settings["oidc:public_key"], algorithms=["RS256"]
+                data["id_token"], self.get_oidc_public_key(), algorithms=["RS256"]
             )
             request.session["payment_wallet_username"] = json.loads(auth_info)["sub"]
             result = True
         except TypeError:
-            print("Could not verify token!")
+            logger.exception("Could not verify oidc token!", request)
             return False
 
         return result
@@ -359,14 +396,14 @@ class Wallet(BasePaymentProvider):
     class NewRefundForm(forms.Form):
         username = forms.CharField(
             label=_("OIDC Username"),
-            required=True,
+            required=False,
         )
 
     def new_refund_control_form_render(self, request: HttpRequest, order: Order):
         form = self.NewRefundForm(
             prefix="refund-wallet",
             data=request.POST
-            if request.method == "POST" and request.POST.get("refund-banktransfer-iban")
+            if request.method == "POST"
             else None,
         )
         template = get_template("pretix_fsr_wallet/new_refund_control_form.html")
@@ -379,10 +416,21 @@ class Wallet(BasePaymentProvider):
         self, request: HttpRequest, amount: Decimal, order: Order
     ) -> OrderRefund:
         f = self.NewRefundForm(prefix="refund-wallet", data=request.POST)
+
         if not f.is_valid():
             raise ValidationError(
                 _("Your input was invalid, please see below for details.")
             )
+
+        print(request.POST)
+        if request.POST.get("refund-wallet-username") == '' and float(request.POST.get("newrefund-wallet")) > 0:
+            print("Raising error")
+            raise ValidationError(
+                "If you want to issue a refund via VerDE Wallet, please provide the OIDC username the refund should "
+                "be issued to"
+            )
+        print("Passed test")
+
         d = {"username": f.cleaned_data["username"], "type": "manual"}
         return OrderRefund(
             order=order,

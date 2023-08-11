@@ -1,4 +1,4 @@
-FSR Wallet
+VerDE Wallet Pretix Payment Plugin
 ==========================
 
 This is a plugin for `pretix`_. 
@@ -16,7 +16,7 @@ Development setup
 
 4. Install dependencies ``pip install -r requirements.txt``
 
-4. Execute ``python setup.py develop`` within this directory to register this application with pretix's plugin registry.
+4. Execute ``pip install -e .`` within this directory to register this application with pretix's plugin registry.
 
 5. Execute ``make`` within this directory to compile translations.
 

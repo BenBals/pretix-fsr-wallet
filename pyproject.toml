@@ -1,0 +1,39 @@
+[project]
+name = "pretix-fsr-wallet"
+dynamic = ["version"]
+description = "Custom payment provider for wallet.myhpi.de, built for the FSR Digital Engineering at Uni Potsdam"
+readme = "README.rst"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+keywords = ["pretix", "fsr-de"]
+authors = [
+    {name = "Ben Bals", email = "benbals@posteo.de"},
+]
+maintainers = [
+    {name = "Ben Bals", email = "benbals@posteo.de"},
+]
+
+[project.entry-points."pretix.plugin"]
+pretix_fsr_validation = "pretix_fsr_wallet:PretixPluginMeta"
+
+[project.entry-points."distutils.commands"]
+build = "pretix_plugin_build.build:CustomBuild"
+
+[build-system]
+requires = [
+    "setuptools",
+    "pretix-plugin-build",
+]
+
+[project.urls]
+homepage = "https://github.com/benbals/pretix-fsr-wallet"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "pretix_fsr_wallet.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["pretix*"]
+namespaces = false
