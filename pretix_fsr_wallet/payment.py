@@ -16,6 +16,7 @@ from jose import jws
 from jsonschema.exceptions import ValidationError
 from pretix.base.models import Order, OrderPayment, OrderRefund
 from pretix.base.payment import BasePaymentProvider, PaymentException
+from pretix.multidomain.urlreverse import mainreverse
 from secrets import token_hex
 import datetime
 
@@ -108,7 +109,7 @@ class Wallet(BasePaymentProvider):
         return template.render(ctx)
 
     def redirect_url(self, request):
-        reversedurl = reverse("plugins:pretix_fsr_wallet:oidc_login_return")
+        reversedurl = mainreverse("plugins:pretix_fsr_wallet:oidc_login_return")
         return request.build_absolute_uri(reversedurl)
 
     def checkout_prepare(self, request, total):
