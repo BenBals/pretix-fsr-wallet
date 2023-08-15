@@ -7,6 +7,7 @@ import urllib
 from collections import OrderedDict
 from decimal import Decimal
 from django import forms
+from django.conf import settings
 from django.http import HttpRequest
 from django.template.loader import get_template
 from django.urls import reverse
@@ -18,6 +19,7 @@ from pretix.base.models import Order, OrderPayment, OrderRefund
 from pretix.base.payment import BasePaymentProvider, PaymentException
 from pretix.multidomain.urlreverse import mainreverse
 from secrets import token_hex
+from urllib.parse import urljoin
 import datetime
 
 import pretix_fsr_wallet.signals as signals
@@ -109,8 +111,11 @@ class Wallet(BasePaymentProvider):
         return template.render(ctx)
 
     def redirect_url(self, request):
+        # similar to pretix.multidomain.urlreverse.build_absolute_uri
         reversedurl = mainreverse("plugins:pretix_fsr_wallet:oidc_login_return")
-        return request.build_absolute_uri(reversedurl)
+        if '://' in reversedurl:
+            return reversedurl
+        return urljoin(settings.SITE_URL, reversedurl)
 
     def checkout_prepare(self, request, total):
         state = token_hex(20)
