@@ -2,7 +2,7 @@ from django.urls import include, path
 
 from .views import OIDCLoginReturnView
 
-urlpatterns = [
+organizer_patterns = [
     path(
         "wallet/",
         include(

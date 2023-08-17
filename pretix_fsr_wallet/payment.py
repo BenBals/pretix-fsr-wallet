@@ -112,7 +112,9 @@ class Wallet(BasePaymentProvider):
 
     def redirect_url(self, request):
         # similar to pretix.multidomain.urlreverse.build_absolute_uri
-        reversedurl = mainreverse("plugins:pretix_fsr_wallet:oidc_login_return")
+        reversedurl = reverse("plugins:pretix_fsr_wallet:oidc_login_return", kwargs={
+            'organizer': request.organizer.slug
+        })
         if '://' in reversedurl:
             return reversedurl
         return urljoin(settings.SITE_URL, reversedurl)
