@@ -111,9 +111,7 @@ class Wallet(BasePaymentProvider):
         return template.render(ctx)
 
     def redirect_url(self, request):
-        return build_absolute_uri(request.organizer, "plugins:pretix_fsr_wallet:oidc_login_return", kwargs={
-            'organizer': request.organizer.slug
-        })
+        return build_absolute_uri(request.organizer, "plugins:pretix_fsr_wallet:oidc_login_return")
 
     def checkout_prepare(self, request, total):
         state = token_hex(20)
