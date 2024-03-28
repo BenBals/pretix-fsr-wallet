@@ -1,6 +1,8 @@
 VerDE Wallet Pretix Payment Plugin
 ==========================
 
+**This plugin has been deprecated in favour of our** `pretix Wallet`_ **plugin.**
+
 This is a plugin for `pretix`_. 
 
 Custom payment provider for wallet.myhpi.de, built for the FSR Digital Engineering at Uni Potsdam
@@ -58,3 +60,4 @@ Released under the terms of the Apache License 2.0
 
 .. _pretix: https://github.com/pretix/pretix
 .. _pretix development setup: https://docs.pretix.eu/en/latest/development/setup.html
+.. _pretix Wallet: http://github.com/fsr-de/pretix-wallet

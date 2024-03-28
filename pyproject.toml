@@ -1,7 +1,7 @@
 [project]
 name = "pretix-fsr-wallet"
 dynamic = ["version"]
-description = "Custom payment provider for wallet.myhpi.de, built for the FSR Digital Engineering at Uni Potsdam"
+description = "[DEPRECATED] Custom payment provider for wallet.myhpi.de, built for the FSR Digital Engineering at Uni Potsdam"
 readme = "README.rst"
 requires-python = ">=3.9"
 license = {file = "LICENSE"}

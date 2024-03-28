@@ -12,7 +12,7 @@ class PluginApp(AppConfig):
         name = gettext_lazy("VerDE Wallet")
         author = "Ben Bals"
         description = gettext_lazy(
-            "Custom payment provider for wallet.myhpi.de, built for the FSR Digital Engineering at Uni Potsdam"
+            "[DEPRECATED] Custom payment provider for wallet.myhpi.de, built for the FSR Digital Engineering at Uni Potsdam"
         )
         visible = True
         version = __version__
